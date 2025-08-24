@@ -5,7 +5,6 @@ import { useState } from "react";
 export default function ProductForm() {
     const [message, setMessage] = useState("");
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -13,15 +12,18 @@ export default function ProductForm() {
         const formData = new FormData(e.target);
         const entries = Object.fromEntries(formData.entries());
 
-        fetch('http://localhost:5000/products', {
+        // Add current date
+        entries.createdAt = new Date().toISOString();
+
+        fetch("https://next-level-server.vercel.app/products", {
             method: "POST",
             headers: {
-                'content-type': "application/json"
+                "content-type": "application/json",
             },
-            body: JSON.stringify(entries)
+            body: JSON.stringify(entries),
         })
-            .then(res => res.json())
-            .then(data => {
+            .then((res) => res.json())
+            .then((data) => {
                 console.log("Product added:", data);
                 setMessage("Product added successfully!");
                 e.target.reset();
@@ -90,17 +92,10 @@ export default function ProductForm() {
                     Add Product
                 </button>
             </form>
+
             {message && (
                 <p className="mt-4 text-center font-medium text-green-600">{message}</p>
             )}
-
-            {/* Show collected values */}
-            {/* {formValues && (
-                <div className="mt-6 bg-gray-100 p-4 rounded">
-                    <h3 className="font-semibold mb-2">Collected Data:</h3>
-                    <pre className="text-sm">{JSON.stringify(formValues, null, 2)}</pre>
-                </div>
-            )} */}
         </div>
     );
 }
